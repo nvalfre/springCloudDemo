@@ -12,7 +12,7 @@ public class Post {
     private Integer id;
     private String description;
 
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
