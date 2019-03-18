@@ -1,6 +1,8 @@
 package com.nv.springCloudDemo.user;
 
 import com.nv.springCloudDemo.exception.UserNotFoundException;
+import com.nv.springCloudDemo.post.Post;
+import com.nv.springCloudDemo.post.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
@@ -18,6 +20,9 @@ public class UserJPAService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @GetMapping("/jpa/users")
     public List<User> retrieveAllUsers() {
@@ -58,9 +63,16 @@ public class UserJPAService {
         }
     }
 
+    @GetMapping("/jpa/users/{id}/posts")
+    public List<Post> retrieveUserPostsById(@PathVariable int id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        handleUserExceptions(id, userOptional);
+
+        return userOptional.get().getPostList();
+    }
 
     private void handleUserExceptions(@PathVariable Integer id, Optional<User> user) {
-        if (user == null) {
+        if (!user.isPresent()) {
             throw new UserNotFoundException("id:" + id);
         }
     }

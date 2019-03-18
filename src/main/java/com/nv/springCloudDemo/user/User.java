@@ -1,14 +1,19 @@
 package com.nv.springCloudDemo.user;
 
+import com.nv.springCloudDemo.post.Post;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @ApiModel(description="All details about user")
 @Entity
@@ -24,6 +29,10 @@ public class User {
     @Past
     @ApiModelProperty(notes="Birth date should be in the past")
     private Date birthDate;
+
+    @OneToMany(mappedBy = "user")
+    @Cascade(value=org.hibernate.annotations.CascadeType.ALL)
+    private List<Post> postList;
 
 
     protected User() {
@@ -58,6 +67,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Post> getPostList() {
+        return postList;
+    }
+
+    public void setPostList(List<Post> postList) {
+        this.postList = postList;
     }
 
     @Override
