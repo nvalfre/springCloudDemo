@@ -2,6 +2,8 @@ package com.nv.springCloudDemo.user;
 
 import com.nv.springCloudDemo.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,10 +26,21 @@ public class UserService {
 
     //GET /users/{id}
     @GetMapping("/users/{id}")
-    public User retrieveUserById(@PathVariable Integer id) {
+    public Resource<User> retrieveUserById(@PathVariable Integer id) {
         User user = userDAO.findOne(id);
         handleUserExceptions(id, user);
-        return userDAO.findOne(id);
+
+        //Object Structure -> "all-users", SERVER_PATH + "/users"
+        //retrieveAllUsers
+
+        Resource<User> resource = new Resource<User>(user);
+        ControllerLinkBuilder linkTo = ControllerLinkBuilder.linkTo(
+                ControllerLinkBuilder.methodOn(this.getClass()).retrieveAllUsers()
+        );
+        resource.add(linkTo.withRel("all-users"));
+        //HATEOAS
+
+        return resource;
     }
 
     private void handleUserExceptions(@PathVariable Integer id, User user) {
