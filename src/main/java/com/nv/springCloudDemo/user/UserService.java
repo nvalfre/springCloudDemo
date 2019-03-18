@@ -17,28 +17,21 @@ public class UserService {
     @Autowired
     private UserDAO userDAO;
 
-    //GET /users
-
     @GetMapping("/users")
     public List<User> retrieveAllUsers() {
         return userDAO.findAll();
     }
 
-    //GET /users/{id}
     @GetMapping("/users/{id}")
     public Resource<User> retrieveUserById(@PathVariable Integer id) {
         User user = userDAO.findOne(id);
         handleUserExceptions(id, user);
-
-        //Object Structure -> "all-users", SERVER_PATH + "/users"
-        //retrieveAllUsers
 
         Resource<User> resource = new Resource<User>(user);
         ControllerLinkBuilder linkTo = ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(this.getClass()).retrieveAllUsers()
         );
         resource.add(linkTo.withRel("all-users"));
-        //HATEOAS
 
         return resource;
     }
@@ -49,14 +42,8 @@ public class UserService {
         }
     }
 
-    //POST /users
     @PostMapping("/users")
     public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
-        /*userDAO.save(user);
-        System.out.printf("New user saved" + user.toString());*/
-
-        //input - details of user
-        //ouput 0 created and return created URI
         User userSaved = userDAO.save(user);
 
         URI location = ServletUriComponentsBuilder
@@ -67,7 +54,6 @@ public class UserService {
         return ResponseEntity.created(location).build();
     }
 
-    //DELETE /users
     @DeleteMapping("/users/{id}")
     public void deleteUserById(@PathVariable Integer id) {
         User user = userDAO.deleteById(id);

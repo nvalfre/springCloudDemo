@@ -37,6 +37,18 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public final ResponseEntity<Object> handlePostNotFoundException(PostNotFoundException exception, WebRequest webRequest) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(),
+                exception.getMessage(),
+                webRequest.getDescription(false)
+        );
+
+        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 new Date(),
