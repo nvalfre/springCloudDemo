@@ -35,7 +35,6 @@ public class UserDAO {
                 return user;
             }
         }
-        //maybe we can make it optional.
         return null;
     }
 
