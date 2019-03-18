@@ -1,12 +1,11 @@
 package com.nv.springCloudDemo.util;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(value={"field1", "field2"})
 public class FilterBean {
     private String field1;
     private String field2;
-
-    @JsonIgnore
     private String field3;
 
     public FilterBean(String field1, String field2, String field3) {
