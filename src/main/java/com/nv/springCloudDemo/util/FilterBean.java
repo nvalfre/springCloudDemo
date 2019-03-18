@@ -1,8 +1,8 @@
 package com.nv.springCloudDemo.util;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFilter;
 
-@JsonIgnoreProperties(value={"field1", "field2"})
+@JsonFilter("DynamicFilter")
 public class FilterBean {
     private String field1;
     private String field2;
