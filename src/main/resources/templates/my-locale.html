@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="ISO-8859-1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+            body {font-family: "Lato", sans-serif}
+            .mySlides {display: none}
+        </style>
+        <title>Home</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#locales").change(function () {
+                    var selectedOption = $('#locales').val();
+                    if (selectedOption !== ''){
+                        window.location.replace('locale?lang=' + selectedOption);
+                    }
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <div class="w3-bar w3-black w3-card">
+            <h1 th:text="#{good.morning.message}"></h1>
+        </div>
+
+        <br /><br />
+        <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
+            <span th:text="#{lang.change}"></span>:
+            <select id="locales" class="w3-ul w3-border w3-white w3-text-grey">
+                <option value="" class="w3-padding"></option>
+                <option value="en" th:text="#{lang.eng}" class="w3-padding"></option>
+                <option value="fr" th:text="#{lang.fr}" class="w3-padding"></option>
+            </select>
+        </div>
+    </body>
+</html>
