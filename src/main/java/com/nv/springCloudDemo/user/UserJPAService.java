@@ -4,8 +4,10 @@ import com.nv.springCloudDemo.exception.UserNotFoundException;
 import com.nv.springCloudDemo.post.Post;
 import com.nv.springCloudDemo.post.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,6 +47,7 @@ public class UserJPAService {
 
 
     @PostMapping("/jpa/users")
+    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
         User userSaved = userRepository.save(user);
 
@@ -57,10 +60,13 @@ public class UserJPAService {
     }
 
     @DeleteMapping("/jpa/users/{id}")
-    public void deleteUserById(@PathVariable Integer id) {
-        if (handleUserExceptions(id)) {
+    public ResponseEntity<?> deleteUserById(@PathVariable Integer id) {
+        handleUserExceptions(id);
+        return userRepository.findById(id).map(account -> {
             userRepository.deleteById(id);
-        }
+            return ResponseEntity.ok().build();
+        }).orElseThrow(() -> new ResourceNotFoundException("Repository [repositoryId=" + id + "] can't be found"));
+
     }
 
     @GetMapping("/jpa/users/{id}/posts")

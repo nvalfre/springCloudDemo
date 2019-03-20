@@ -5,6 +5,8 @@ import com.nv.springCloudDemo.user.User;
 import com.nv.springCloudDemo.user.UserRepository;
 import com.nv.springCloudDemo.util.ExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,6 +23,7 @@ public class PostJPAService {
     private PostRepository postRepository;
 
     @PostMapping("/jpa/users/{id}/posts")
+    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<Object> retrieveUserPostsById(@PathVariable int id, @RequestBody Post post) {
         Optional<User> userOptional = userRepository.findById(id);
         ExceptionHandler.handleUserExceptions(id, userOptional);
@@ -48,6 +51,19 @@ public class PostJPAService {
                 deletePostIfPresentInUserPostList(idPost, user, post);
             }
         }
+    }
+
+    @PutMapping(value = "/jpa/posts/{postId}/users/{userId}")
+    public ResponseEntity<Post> updateIdUsers(@PathVariable Integer userId, @PathVariable Integer postId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User [userId=" + userId + "] can't be found"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("{Post [postId=" + postId + "] can't be found"));
+
+        return postRepository.findById(postId).map(postMap -> {
+            post.setUser(user);
+            postRepository.save(post);
+            return ResponseEntity.ok(post);
+        }).orElseThrow(() -> new ResourceNotFoundException("Post [postId=" + postId + "] can't be found"));
     }
 
     private void deletePostIfPresentInUserPostList(@PathVariable Integer idPost, User user, Post post) {
